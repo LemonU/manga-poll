@@ -14,3 +14,7 @@ This project will solve the above 2 problems with the following features:
 - Notify the user when new updates are available for their subscribed series
 - Download the manga to the local disk to allow offline smooth consumption, no need to wait for the crappy servers
 - Record the reading progress, take your own pace in consuming the latest releases
+
+## Constraints
+
+The project must utilize a Kafka source connector to pull image from the host and/or a Kafka sink connector to save the images to the local disk.
