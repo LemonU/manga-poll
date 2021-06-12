@@ -9,7 +9,6 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
 
-@Slf4j
 public class ManhuaguiSourceConnector extends SourceConnector {
 
   ManhuaguiSourceConnectorConfig config;
@@ -28,7 +27,7 @@ public class ManhuaguiSourceConnector extends SourceConnector {
 
   @Override
   public List<Map<String, String>> taskConfigs(int i) {
-    return null;
+    return Collections.singletonList(originals);
   }
 
   @Override
