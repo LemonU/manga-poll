@@ -1,5 +1,7 @@
-package com.github.lemonu;
+package com.github.lemonu.mangapoll.connectors;
 
+import com.github.lemonu.mangapoll.connectors.config.ManhuaguiSourceConnectorConfig;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -10,14 +12,18 @@ import org.apache.kafka.connect.source.SourceConnector;
 @Slf4j
 public class ManhuaguiSourceConnector extends SourceConnector {
 
-  @Override
-  public void start(Map<String, String> map) {
+  ManhuaguiSourceConnectorConfig config;
+  Map<String, String> originals;
 
+  @Override
+  public void start(Map<String, String> props) {
+    originals = Collections.unmodifiableMap(props);
+    config = new ManhuaguiSourceConnectorConfig(props);
   }
 
   @Override
   public Class<? extends Task> taskClass() {
-    return null;
+    return ManhuaguiSourceConnectorTask.class;
   }
 
   @Override
@@ -32,7 +38,7 @@ public class ManhuaguiSourceConnector extends SourceConnector {
 
   @Override
   public ConfigDef config() {
-    return null;
+    return ManhuaguiSourceConnectorConfig.configDef();
   }
 
   @Override

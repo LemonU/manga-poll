@@ -1,4 +1,4 @@
-package com.github.lemonu;
+package com.github.lemonu.mangapoll.connectors;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +20,11 @@ public class ManhuaguiSourceConnectorTask extends SourceTask {
   @Override
   public List<SourceRecord> poll() throws InterruptedException {
     return null;
+  }
+
+  @Override
+  public void commit() throws InterruptedException {
+    super.commit();
   }
 
   @Override
