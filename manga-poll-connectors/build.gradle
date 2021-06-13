@@ -3,24 +3,29 @@ plugins {
 }
 
 group = 'com.github.lemonu'
-version = '0.0.1-SNAPSHOT'
+version = '0.1'
 sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
 }
 
+configurations {
+    extraLib
+}
+
 dependencies {
     implementation 'org.apache.kafka:connect-api:2.8.0'
-    implementation 'org.jsoup:jsoup:1.13.1'
+    extraLib 'org.jsoup:jsoup:1.13.1'
     testImplementation 'junit:junit:4.11'
-    runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
-    implementation 'org.projectlombok:lombok:1.18.20'
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
+    extraLib 'org.projectlombok:lombok:1.18.20'
+    configurations.implementation.extendsFrom(configurations.extraLib)
 }
 
 jar {
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.extraLib.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
