@@ -16,8 +16,10 @@ configurations {
 
 dependencies {
     implementation 'org.apache.kafka:connect-api:2.8.0'
+    implementation 'org.jetbrains:annotations:20.1.0'
     extraLib 'org.jsoup:jsoup:1.13.1'
-    testImplementation 'junit:junit:4.11'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+    testImplementation 'org.mockito:mockito-core:3.11.0'
     implementation 'org.slf4j:slf4j-simple:1.7.30'
     extraLib 'org.projectlombok:lombok:1.18.20'
     configurations.implementation.extendsFrom(configurations.extraLib)
@@ -30,5 +32,5 @@ jar {
 }
 
 test {
-    useJUnit()
+    useJUnitPlatform()
 }

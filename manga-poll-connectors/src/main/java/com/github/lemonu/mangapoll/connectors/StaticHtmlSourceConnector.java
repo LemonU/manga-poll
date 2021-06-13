@@ -17,6 +17,8 @@ public class StaticHtmlSourceConnector extends SourceConnector {
 
   Map<String, String> originals;
 
+  public static boolean newStart = true;
+
   @Override
   public void start(Map<String, String> props) {
     log.info("CONNECTOR HAS STARTED!");

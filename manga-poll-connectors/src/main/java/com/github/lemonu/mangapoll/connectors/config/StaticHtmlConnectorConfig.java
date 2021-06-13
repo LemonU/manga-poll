@@ -1,10 +1,14 @@
 package com.github.lemonu.mangapoll.connectors.config;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
+import org.apache.kafka.common.config.ConfigDef.Validator;
+import org.apache.kafka.common.config.ConfigException;
 
 public class StaticHtmlConnectorConfig extends AbstractConfig {
 
@@ -12,6 +16,14 @@ public class StaticHtmlConnectorConfig extends AbstractConfig {
   private static final Type MAIN_PAGE_URL_TYP = Type.STRING;
   private static final Importance MAIN_PAGE_URL_IMPORTANCE = Importance.HIGH;
   private static final String MAIN_PAGE_URL_DOC = "The url to the manga's main page";
+  private static final Validator MAIN_PAGE_URL_VALIDATOR = (name, value) -> {
+    try {
+      new URI((String) value);
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+      throw new ConfigException("Incorrect URL format");
+    }
+  };
 
   public static final String UPDATE_CSS_QUERY = "updateCssQuery";
   private static final Type UPDATE_CSS_QUERY_TYPE = Type.STRING;

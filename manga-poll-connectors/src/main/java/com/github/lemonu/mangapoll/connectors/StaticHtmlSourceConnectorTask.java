@@ -1,20 +1,28 @@
 package com.github.lemonu.mangapoll.connectors;
 
+import static com.github.lemonu.mangapoll.connectors.config.StaticHtmlConnectorConfig.CHAPTER_CSS_QUERY;
 import static com.github.lemonu.mangapoll.connectors.config.StaticHtmlConnectorConfig.MAIN_PAGE_URL;
 import static com.github.lemonu.mangapoll.connectors.config.StaticHtmlConnectorConfig.POLL_INTERVAL;
+import static com.github.lemonu.mangapoll.connectors.config.StaticHtmlConnectorConfig.TITLE_CSS_QUERY;
 import static com.github.lemonu.mangapoll.connectors.config.StaticHtmlConnectorConfig.UPDATE_CSS_QUERY;
 
 import com.github.lemonu.mangapoll.connectors.config.StaticHtmlConnectorConfig;
+import com.github.lemonu.mangapoll.connectors.model.UpdateSchema;
+import com.github.lemonu.mangapoll.connectors.service.ElementParser;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.apache.kafka.connect.data.Schema;
+import org.apache.kafka.connect.data.SchemaBuilder;
+import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +32,7 @@ public class StaticHtmlSourceConnectorTask extends SourceTask {
 
   private StaticHtmlConnectorConfig config;
   private Map<String, String> originalProps;
+  private String prevUpdateUrl;
 
   @Override
   public String version() {
@@ -39,33 +48,54 @@ public class StaticHtmlSourceConnectorTask extends SourceTask {
 
   @Override
   public List<SourceRecord> poll() throws InterruptedException {
-    try {
-      Thread.sleep(config.getLong(POLL_INTERVAL));
-    } catch (InterruptedException e) {
-      return null;
+    if (StaticHtmlSourceConnector.newStart) {
+      StaticHtmlSourceConnector.newStart = false;
+      logger.info("Fresh start, not sleeping");
+    } else {
+      try {
+        logger.info("Sleeping....");
+        Thread.sleep(config.getLong(POLL_INTERVAL));
+      } catch (InterruptedException e) {
+        return null;
+      }
     }
 
-    Document document = null;
+    Document document;
     try {
       document = Jsoup.connect(config.getString(MAIN_PAGE_URL)).get();
     } catch (IOException e) {
       e.printStackTrace();
-      return Collections.emptyList();
+      return null;
     }
-    String[] queries = config.getString(UPDATE_CSS_QUERY).split(",");
-    Elements tmp = document.getAllElements();
-    for (String query : queries) {
-      tmp = tmp.select(query);
+
+    ElementParser parser = new ElementParser(document);
+    String updateLink = parser.getUpdateLink(config.getString(UPDATE_CSS_QUERY));
+    if (this.prevUpdateUrl != null && this.prevUpdateUrl.equals(updateLink)) {
+      logger.info("No updates detected, skipping this poll");
+      return null;
     }
-    String lastUpdatedLink = tmp.first().attr("href");
-    String topics = originalProps.get("topics");
+
+    String domainName = "";
+    try {
+      domainName = new URI(config.getString(MAIN_PAGE_URL)).getHost();
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+    }
+    String title = parser.getTitle(config.getString(TITLE_CSS_QUERY));
+    String chapterName = parser.getChapterName(config.getString(CHAPTER_CSS_QUERY));
+    this.prevUpdateUrl = updateLink;
+    updateLink = domainName + updateLink;
+    logger.info("Sending update:{}, {}, {}", title, chapterName, updateLink);
+    Struct struct = new Struct(UpdateSchema.getSchema())
+        .put(UpdateSchema.TITLE, title)
+        .put(UpdateSchema.CHAPTER, chapterName)
+        .put(UpdateSchema.URL, updateLink);
     return Collections.singletonList(
-        new SourceRecord(
+        new SourceRecord(null,
             null,
-            null,
-            topics,
-            null,
-            lastUpdatedLink
+            originalProps.get("topics"),
+            UpdateSchema.getSchema(),
+            struct
         )
     );
   }
