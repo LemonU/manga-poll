@@ -9,7 +9,7 @@ services:
 
     broker:
         image: manga-poll:broker
-        hostname: broker
+        hostname: "<your local ip address>"
         ports:
             - 9092:9092
         depends_on: 
@@ -17,6 +17,8 @@ services:
     
     connect:
         image: manga-poll:connect
+        environment: 
+            BROKER_URL: <your local ip address>:9092
         ports:
             - 8083:8083
         depends_on: 
