@@ -1,0 +1,23 @@
+version: "3.7"
+
+services: 
+    zookeeper:
+        image: manga-poll:zookeeper
+        hostname: zookeeper
+        ports:
+            - 2181:2181
+
+    broker:
+        image: manga-poll:broker
+        hostname: broker
+        ports:
+            - 9092:9092
+        depends_on: 
+            - zookeeper
+    
+    connect:
+        image: manga-poll:connect
+        ports:
+            - 8083:8083
+        depends_on: 
+            - broker
