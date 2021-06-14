@@ -1,5 +1,11 @@
 # manga-poll
 
+## How to Build
+
+1. Clone the project
+2. `cd manga-poll-devops/`
+3. `docker-compose up -d` (don't forget to check the comments in the .yml file)
+
 ## User Story
 
 You just ended your shift, and want to quickly checkout the latest manga updates.
