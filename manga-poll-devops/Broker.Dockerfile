@@ -13,4 +13,5 @@ COPY config/server.properties kafka-runtime/config/
 ENV ZOOKEEPER_URL=zookeeper:2181
 
 CMD echo zookeeper.connect=${ZOOKEEPER_URL} >> kafka-runtime/config/server.properties && \
+cat kafka-runtime/config/server.properties && \
 kafka-runtime/bin/kafka-server-start.sh kafka-runtime/config/server.properties

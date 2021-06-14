@@ -16,4 +16,5 @@ wget 'https://github.com/LemonU/manga-poll/releases/download/0.1/manga-poll-conn
 ENV BROKER_URL=broker:9092
 
 CMD echo bootstrap.servers=${BROKER_URL} >> kafka-runtime/config/connect-distributed.properties && \
+cat kafka-runtime/config/connect-distributed.properties && \
 kafka-runtime/bin/connect-distributed.sh kafka-runtime/config/connect-distributed.properties

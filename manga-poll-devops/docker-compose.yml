@@ -11,7 +11,8 @@ services:
 
     broker:
         image: lemonu/manga-poll:broker
-        hostname: broker
+        hostname: broker                        # Replace this with your physical machine's local network ip
+                                                # if you intend to communicate with the contained broker
         environment: 
             - ZOOKEEPER_URL=zookeeper:2181
         ports:
@@ -23,7 +24,8 @@ services:
         image: lemonu/manga-poll:connect
         hostname: connect
         environment: 
-            - BROKER_URL=broker:9092
+            - BROKER_URL=broker:9092            # Replace "broker" with your physical machine's local network ip
+                                                # if you intend to communicate with the contained broker
         ports:
             - 8083:8083
         depends_on: 

@@ -13,4 +13,5 @@ ENV ZOOKEEPER_PORT=2181
 COPY ./config/zookeeper.properties kafka-runtime/config
 
 CMD echo clientPort=${ZOOKEEPER_PORT} >> kafka-runtime/config/zookeeper.properties && \
+cat kafka-runtime/config/zookeeper.properties && \
 kafka-runtime/bin/zookeeper-server-start.sh kafka-runtime/config/zookeeper.properties
