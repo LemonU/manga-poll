@@ -1,15 +1,19 @@
-version: "3.7"
+version: "3.3"
 
 services: 
     zookeeper:
         image: lemonu/manga-poll:zookeeper
         hostname: zookeeper
+        environment:
+            - ZOOKEEPER_PORT=2181
         ports:
             - 2181:2181
 
     broker:
         image: lemonu/manga-poll:broker
-        hostname: "<your local ip address>"
+        hostname: broker
+        environment: 
+            - ZOOKEEPER_URL=zookeeper:2181
         ports:
             - 9092:9092
         depends_on: 
@@ -17,8 +21,9 @@ services:
     
     connect:
         image: lemonu/manga-poll:connect
+        hostname: connect
         environment: 
-            BROKER_URL: <your local ip address>:9092
+            - BROKER_URL=broker:9092
         ports:
             - 8083:8083
         depends_on: 
