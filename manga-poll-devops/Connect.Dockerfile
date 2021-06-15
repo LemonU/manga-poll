@@ -13,8 +13,11 @@ COPY config/connect-distributed.properties kafka-runtime/config/
 RUN cd kafka-runtime/libs && \
 wget 'https://github.com/LemonU/manga-poll/releases/download/0.1/manga-poll-connectors-0.1.jar'
 
-ENV BROKER_URL=broker:9092
+ENV BROKER_URL=broker:29092
+ENV OFFSET_FLUSH_INTERVAL_MS=10000
 
-CMD echo bootstrap.servers=${BROKER_URL} >> kafka-runtime/config/connect-distributed.properties && \
-cat kafka-runtime/config/connect-distributed.properties && \
-kafka-runtime/bin/connect-distributed.sh kafka-runtime/config/connect-distributed.properties
+CMD cd kafka-runtime && \
+echo bootstrap.servers=${BROKER_URL} >> config/connect-distributed.properties && \
+echo offset.flush.interval.ms=${OFFSET_FLUSH_INTERVAL_MS} >> config/connect-distributed.properties && \
+cat config/connect-distributed.properties && \
+bin/connect-distributed.sh config/connect-distributed.properties
