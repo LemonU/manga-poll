@@ -33,6 +33,9 @@ services:
         environment: 
             - BROKER_URL=broker:29092
             - OFFSET_FLUSH_INTERVAL_MS=600000
+            - PLUGIN_PATH=/opt/connectors
+        volumes: 
+            - ~/connect-plugins/:/opt/connectors
         ports:
             - 8083:8083
         depends_on: 
