@@ -1,10 +1,11 @@
 # manga-poll
 
-## How to Build
+## How to Start manga-poll
 
-1. Clone the project
-2. `cd manga-poll-devops/`
-3. `docker-compose up -d` (don't forget to check the comments in the .yml file)
+```bash
+curl https://raw.githubusercontent.com/LemonU/manga-poll/develop/manga-poll-devops/docker-compose.yml > docker-compose.yml
+docker-compose up -d
+```
 
 ## User Story
 
