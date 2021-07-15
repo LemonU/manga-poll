@@ -1,0 +1,3 @@
+rootProject.name = 'manga-poll'
+include 'manga-poll-client'
+include 'manga-poll-connectors'

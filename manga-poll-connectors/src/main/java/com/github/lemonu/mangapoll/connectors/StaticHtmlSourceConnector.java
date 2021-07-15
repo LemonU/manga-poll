@@ -21,7 +21,7 @@ public class StaticHtmlSourceConnector extends SourceConnector {
 
   @Override
   public void start(Map<String, String> props) {
-    log.info("CONNECTOR HAS STARTED!");
+    log.debug("CONNECTOR HAS STARTED!");
     originals = Collections.unmodifiableMap(props);
   }
 
@@ -32,13 +32,13 @@ public class StaticHtmlSourceConnector extends SourceConnector {
 
   @Override
   public List<Map<String, String>> taskConfigs(int i) {
-    log.info("CONNECTOR DISTRIBUTING TASK CONFIGS");
+    log.debug("CONNECTOR DISTRIBUTING TASK CONFIGS");
     return Collections.singletonList(originals);
   }
 
   @Override
   public void stop() {
-    log.info("CONNECTOR HAS STOPPED!");
+    log.debug("CONNECTOR HAS STOPPED!");
   }
 
   @Override
