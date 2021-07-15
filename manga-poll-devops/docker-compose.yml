@@ -35,5 +35,7 @@ services:
             - OFFSET_FLUSH_INTERVAL_MS=600000
         ports:
             - 8083:8083
+        volumes:
+            - ~/kafka-connect-plugins/:/opt/kafka-connect-plugins/
         depends_on: 
             - broker
